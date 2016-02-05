@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{C3844685-A369-0945-4A65-4020F8B1B2C6}") = "Snake-Unity3D", "Assembly-CSharp.csproj", "{1B878C2B-C980-1F8F-8623-0D99A6940F3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B878C2B-C980-1F8F-8623-0D99A6940F3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B878C2B-C980-1F8F-8623-0D99A6940F3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B878C2B-C980-1F8F-8623-0D99A6940F3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B878C2B-C980-1F8F-8623-0D99A6940F3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal

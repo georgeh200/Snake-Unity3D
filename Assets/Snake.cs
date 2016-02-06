@@ -9,8 +9,7 @@ public class Snake : MonoBehaviour {
 	public GameObject gridObject;
 	public GameObject edgesObject;
 
-	private LineRenderer lineGrid;
-	private LineRenderer lineEdge;
+
 
 
 
@@ -24,16 +23,14 @@ public class Snake : MonoBehaviour {
 	private float startX;
 	private float startY;
 
-	private ArrayList listEdges;  // for edge lines
-	private ArrayList listGrid; // for grid lines
+
 	private float cellWidth=0;
 	private Rect rect1;
 
 
 	public Snake()
 	{
-		listGrid = new ArrayList ();
-		listEdges = new ArrayList ();
+		
 	}
 
 	// Use this for initialization
@@ -41,8 +38,7 @@ public class Snake : MonoBehaviour {
 		
 		this.cellWidth = this.transform.localScale.x;
 
-		this.lineEdge = edgesObject.GetComponent<LineRenderer> ();
-		this.lineGrid = gridObject.GetComponent<LineRenderer> ();
+
 
 
 		setupGame ();
@@ -69,6 +65,7 @@ public class Snake : MonoBehaviour {
 		startY = snakeScreenHeight/2-(snakeScreenHeight - gameHeight) / 2;
 
 		startX *= -1;
+		startY *= -1;
 
 		Debug.Log ("snakeScreenWidth:"+snakeScreenWidth);
 		Debug.Log ("snakeScreenHeight:"+snakeScreenHeight);
@@ -80,15 +77,9 @@ public class Snake : MonoBehaviour {
 		Debug.Log ("startXstartX:"+startX);
 		Debug.Log ("startXstartyy:"+startY);
 
-		setupGrid ();
+		drawBounadries ();
 
-	//	this.lineEdge.SetVertexCount (2);
-
-	//	this.lineEdge.SetPosition(0,new Vector3(startX,startY,0));
-	//	this.lineEdge.SetPosition(1,new Vector3(startX+gameWidth,startY,0));
-	//	this.lineEdge.SetPosition(2,new Vector3(startX+gameWidth,startY-gameHeight,0));
-	//	this.lineEdge.SetPosition(3,new Vector3(startX,startY-gameHeight,0));
-	//	this.lineEdge.SetPosition(4,new Vector3(startX,startY,0));
+	
 
 
 
@@ -98,7 +89,7 @@ public class Snake : MonoBehaviour {
 	}
 
 
-	private void setupGrid()
+	private void drawBounadries()
 	{
 		LineRenderer line = getEdgeLine ();
 
@@ -107,17 +98,17 @@ public class Snake : MonoBehaviour {
 
 		line = getEdgeLine ();
 		line.SetPosition(0,new Vector3(startX+gameWidth,startY,0));
-		line.SetPosition(1,new Vector3(startX+gameWidth,startY-gameHeight,0));
+		line.SetPosition(1,new Vector3(startX+gameWidth,startY+gameHeight,0));
 
 
 		line = getEdgeLine ();
-		line.SetPosition(0,new Vector3(startX+gameWidth,startY-gameHeight,0));
-		line.SetPosition(1,new Vector3(startX,startY-gameHeight,0));
+		line.SetPosition(0,new Vector3(startX+gameWidth,startY+gameHeight,0));
+		line.SetPosition(1,new Vector3(startX,startY+gameHeight,0));
 
 
 		line = getEdgeLine ();
 
-		line.SetPosition(0,new Vector3(startX,startY-gameHeight,0));
+		line.SetPosition(0,new Vector3(startX,startY+gameHeight,0));
 		line.SetPosition(1,new Vector3(startX,startY,0));
 
 	}
@@ -134,8 +125,7 @@ public class Snake : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (true)
-			return;
+		
 		this.handleInput ();
 		gameTime += Time.deltaTime;
 		Vector3 newPos = transform.position + (this.direction * Time.deltaTime * speed);
@@ -176,6 +166,13 @@ public class Snake : MonoBehaviour {
 		else
 		return false;
 	}
+
+
+
+
+
+
+
 
 
 	private Texture2D whiteTexture;

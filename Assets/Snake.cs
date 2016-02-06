@@ -6,8 +6,7 @@ public class Snake : MonoBehaviour {
 
 	public GameObject food;
 
-	public GameObject gridObject;
-	public GameObject edgesObject;
+
 
 
 
@@ -152,7 +151,31 @@ public class Snake : MonoBehaviour {
 
 	bool boundariesCollide(Vector3 p,GameObject gameObject)
 	{
-		Renderer renderer= gameObject.GetComponent<Renderer> ();
+		//startX startY 
+
+
+		float w = gameObject.transform.localScale.x;
+		float h = gameObject.transform.localScale.y;
+
+		float x = gameObject.transform.position.x;
+		float y = gameObject.transform.position.y;
+
+		if (x - w / 2 < startX)
+			return true;
+		if ((x + w / 2) > (startX + gameWidth))
+			return true;
+
+
+		if (y - h / 2 < startY)
+			return true;
+		if ((y + h / 2) > (startY + gameHeight))
+			return true;
+
+
+		return false;
+
+
+	/*	Renderer renderer= gameObject.GetComponent<Renderer> ();
 		p += new Vector3 (renderer.bounds.size.x / 2, renderer.bounds.size.y / 2, renderer.bounds.size.z / 2);
 
 		Vector3 viewPos = Camera.main.WorldToViewportPoint(p);
@@ -164,7 +187,7 @@ public class Snake : MonoBehaviour {
 		if(viewPos.y<=0||viewPos.y>=1||viewPos.x<=0||viewPos.x>=1)
 			return true;
 		else
-		return false;
+		return false;*/
 	}
 
 

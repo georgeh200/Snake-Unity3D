@@ -12,9 +12,26 @@ public class Snake : MonoBehaviour {
 	private float gameTime=0;
 	private float snakeScreenWidth;
 	private float snakeScreenHeight;
+	private float gameWidth;
+	private float gameHeight;
+	private float startX;
+	private float startY;
+
+	private ArrayList listEdges;  // for edge lines
+	private ArrayList listGrid; // for grid lines
+	private float cellWidth=0;
+	private Rect rect1;
+
+
+	public Snake()
+	{
+		listGrid = new ArrayList ();
+		listEdges = new ArrayList ();
+	}
 
 	// Use this for initialization
 	void Start () {
+		this.cellWidth = this.transform.localScale.x;
 
 	//	Vector3 p1 = Camera.main.ScreenToWorldPoint(new Vector3(1,Screen.height,1));
 	//	Debug.logger.Log ("p1p1p1p1p1:" + p1.y);
@@ -24,7 +41,7 @@ public class Snake : MonoBehaviour {
 		Vector3 p1 = Camera.main.ViewportToWorldPoint(new Vector3(0.0f,0.0f,6));
 		Vector3 p2 = Camera.main.ViewportToWorldPoint(new Vector3(1,0.0f,6));
 		float unit = Vector3.Distance(p1, p2);
-		Debug.Log ("unitunitunit:"+unit);
+
 
 		//Vector3 p2 = Camera.main.ScreenToWorldPoint(Vector3.right);
 		//float unit = Vector3.Distance(p1, p2);
@@ -46,16 +63,30 @@ public class Snake : MonoBehaviour {
 		//get width and heigh of screen in
 		Vector3 p1 = Camera.main.ViewportToWorldPoint(new Vector3(0,0,6));
 		Vector3 p2 = Camera.main.ViewportToWorldPoint(new Vector3(1,0,6));
-		snakeScreenWidth = Vector3.Distance(p1, p2)-0.5f;	
+		snakeScreenWidth = Vector3.Distance(p1, p2);	
 
 		p2 = Camera.main.ViewportToWorldPoint(new Vector3(0,1,6));
 
-		snakeScreenHeight = Vector3.Distance(p1, p2) - 0.5f;	
+		snakeScreenHeight = Vector3.Distance(p1, p2) ;	
 
-		//this.transform.position = new Vector3 (width / 2 - 0.5f, height / 2 - 0.5f, 0);
+		int	colums =  (int)Mathf.Floor( (snakeScreenWidth-0.5f) / cellWidth);
+		int	rows= (int)Mathf.Floor((snakeScreenHeight-0.5f) / cellWidth);
 
-		//Debug.Log ("x:"+width/2);
-		//Debug.Log ("y:"+height/2);
+		gameWidth = colums * cellWidth;
+		gameHeight= rows * cellWidth;
+		startX = (snakeScreenWidth - gameWidth) / 2;
+		startY = (snakeScreenHeight - gameHeight) / 2;
+
+		Debug.Log ("snakeScreenWidth:"+snakeScreenWidth);
+		Debug.Log ("snakeScreenHeight:"+snakeScreenHeight);
+
+
+		Debug.Log ("gameWidth:"+gameWidth);
+		Debug.Log ("gameHeight:"+gameHeight);
+
+		Debug.Log ("startXstartX:"+startX);
+		Debug.Log ("startXstartyy:"+startY);
+
 
 	}
 
@@ -104,5 +135,30 @@ public class Snake : MonoBehaviour {
 		return false;
 	}
 
+
+	private Texture2D whiteTexture;
+	void OnGUI()
+	{
+		if(this.whiteTexture==null)
+			this.whiteTexture=Texture2D.whiteTexture;
+		
+	//	drawHorizontalLine (new Vector2 (10, 10), new Vector2 (100, 10),Color.red);
+
+	//	drawVerticalLine (new Vector2 (10, 10), new Vector2 (100, 100),Color.red);
+
+	//	GUI.Label (, new Color(0,0,0,1));
+	}
+
+	private void drawHorizontalLine(Vector2 p1,Vector2 p2,Color color)
+	{
+		GUI.color = color;
+		GUI.DrawTexture(new Rect (p1.x, p1.y, p2.x, 2), this.whiteTexture, ScaleMode.StretchToFill);
+	}
+
+	private void drawVerticalLine(Vector2 p1,Vector2 p2,Color color)
+	{
+		GUI.color = color;
+		GUI.DrawTexture(new Rect (p1.x, p1.y, 2, p2.y), this.whiteTexture, ScaleMode.StretchToFill);
+	}
 
 }

@@ -5,7 +5,14 @@ public class Snake : MonoBehaviour {
 
 
 	public GameObject food;
-	public float spawnTime;
+
+	public GameObject gridObject;
+	public GameObject edgesObject;
+
+	private LineRenderer lineGrid;
+	private LineRenderer lineEdge;
+
+
 
 	private Vector3 direction=Vector3.up;
 	private float speed=0.9f;
@@ -31,28 +38,12 @@ public class Snake : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		
 		this.cellWidth = this.transform.localScale.x;
 
-	//	Vector3 p1 = Camera.main.ScreenToWorldPoint(new Vector3(1,Screen.height,1));
-	//	Debug.logger.Log ("p1p1p1p1p1:" + p1.y);
+		this.lineEdge = edgesObject.GetComponent<LineRenderer> ();
+		this.lineGrid = gridObject.GetComponent<LineRenderer> ();
 
-		this.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.0f,0.5f,6));
-
-		Vector3 p1 = Camera.main.ViewportToWorldPoint(new Vector3(0.0f,0.0f,6));
-		Vector3 p2 = Camera.main.ViewportToWorldPoint(new Vector3(1,0.0f,6));
-		float unit = Vector3.Distance(p1, p2);
-
-
-		//Vector3 p2 = Camera.main.ScreenToWorldPoint(Vector3.right);
-		//float unit = Vector3.Distance(p1, p2);
-		//Debug.Log ("unitunitunit:"+unit);
-
-	//	Vector3 p = Camera.main.WorldToScreenPoint (transform.position);
-	//	p=Camera.main.ScreenToViewportPoint (new Vector3 (Screen.width/2, 0, 0));
-	//	Debug.logger.Log ("Screen.geo:"+p.y);
-	//	Debug.logger.Log ("Screen.width:" + Screen.height);
-
-	//	this.transform.position = p;
 
 		setupGame ();
 
@@ -74,8 +65,10 @@ public class Snake : MonoBehaviour {
 
 		gameWidth = colums * cellWidth;
 		gameHeight= rows * cellWidth;
-		startX = (snakeScreenWidth - gameWidth) / 2;
-		startY = (snakeScreenHeight - gameHeight) / 2;
+		startX =  snakeScreenWidth/2-(snakeScreenWidth - gameWidth) / 2;
+		startY = snakeScreenHeight/2-(snakeScreenHeight - gameHeight) / 2;
+
+		startX *= -1;
 
 		Debug.Log ("snakeScreenWidth:"+snakeScreenWidth);
 		Debug.Log ("snakeScreenHeight:"+snakeScreenHeight);
@@ -87,7 +80,56 @@ public class Snake : MonoBehaviour {
 		Debug.Log ("startXstartX:"+startX);
 		Debug.Log ("startXstartyy:"+startY);
 
+		setupGrid ();
 
+	//	this.lineEdge.SetVertexCount (2);
+
+	//	this.lineEdge.SetPosition(0,new Vector3(startX,startY,0));
+	//	this.lineEdge.SetPosition(1,new Vector3(startX+gameWidth,startY,0));
+	//	this.lineEdge.SetPosition(2,new Vector3(startX+gameWidth,startY-gameHeight,0));
+	//	this.lineEdge.SetPosition(3,new Vector3(startX,startY-gameHeight,0));
+	//	this.lineEdge.SetPosition(4,new Vector3(startX,startY,0));
+
+
+
+
+
+
+	}
+
+
+	private void setupGrid()
+	{
+		LineRenderer line = getEdgeLine ();
+
+		line.SetPosition(0,new Vector3(startX,startY,0));
+		line.SetPosition(1,new Vector3(startX+gameWidth,startY,0));
+
+		line = getEdgeLine ();
+		line.SetPosition(0,new Vector3(startX+gameWidth,startY,0));
+		line.SetPosition(1,new Vector3(startX+gameWidth,startY-gameHeight,0));
+
+
+		line = getEdgeLine ();
+		line.SetPosition(0,new Vector3(startX+gameWidth,startY-gameHeight,0));
+		line.SetPosition(1,new Vector3(startX,startY-gameHeight,0));
+
+
+		line = getEdgeLine ();
+
+		line.SetPosition(0,new Vector3(startX,startY-gameHeight,0));
+		line.SetPosition(1,new Vector3(startX,startY,0));
+
+	}
+
+	private LineRenderer getEdgeLine()
+	{
+		GameObject gameObject = new GameObject ("");
+		gameObject.AddComponent<LineRenderer> ();
+		LineRenderer line = gameObject.GetComponent<LineRenderer> ();
+		line.SetWidth (0.05f, 0.05f);
+		line.SetVertexCount (2);
+		return line;
 	}
 
 	// Update is called once per frame
@@ -137,17 +179,17 @@ public class Snake : MonoBehaviour {
 
 
 	private Texture2D whiteTexture;
-	void OnGUI()
-	{
-		if(this.whiteTexture==null)
-			this.whiteTexture=Texture2D.whiteTexture;
+//	void OnGUI()
+//	{
+	//	if(this.whiteTexture==null)
+	//		this.whiteTexture=Texture2D.whiteTexture;
 		
 	//	drawHorizontalLine (new Vector2 (10, 10), new Vector2 (100, 10),Color.red);
 
 	//	drawVerticalLine (new Vector2 (10, 10), new Vector2 (100, 100),Color.red);
 
 	//	GUI.Label (, new Color(0,0,0,1));
-	}
+//	}
 
 	private void drawHorizontalLine(Vector2 p1,Vector2 p2,Color color)
 	{

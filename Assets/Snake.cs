@@ -25,7 +25,7 @@ public class Snake : MonoBehaviour {
 
 
 	public Vector3 direction=Vector3.down;
-	public float speed=0.1f;
+	public float speed=0.01f;
 	private float gameTime=0;
 	private float snakeScreenWidth;
 	private float snakeScreenHeight;
@@ -89,6 +89,7 @@ public class Snake : MonoBehaviour {
 
 	public SNCell getCell(int r, int c)
 	{
+		
 		return arrCells[r,c];
 	}
 
@@ -224,6 +225,12 @@ public class Snake : MonoBehaviour {
 
 	}
 
+	public bool lastPieceInSnake(GameObject piece)
+	{
+		return (listPieces [listPieces.Count - 1] == piece);
+	}
+
+
 	private void addInitialPieces()
 	{
 		
@@ -234,16 +241,17 @@ public class Snake : MonoBehaviour {
 		pp.row = rr;
 		pp.column = cc;
 
+
 	//	Debug.Log ("head.transform.position:" + head.transform.position.x);	
 
 		GameObject piece = null;
 		Vector3 p = Vector3.zero;
-		for(int j=rr+1;j<rr+2;j++)
+		for(int j=rr+1;j<rr+10;j++)
 		{
 			p=new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ j * cellHeight+cellHeight/2, 0);
 			piece=(GameObject)Instantiate(this.prfPiece, p, Quaternion.identity);
 			pp = piece.GetComponent<SNPiece> ();
-			pp.row = rr;
+			pp.row = j;
 			pp.column = cc;
 			listPieces.Add (piece);
 		}
@@ -320,6 +328,10 @@ public class Snake : MonoBehaviour {
 
 	void FixedUpdate () {
 
+
+		if (this.gameStatus != Snake.STATUS_RUNNING)
+			return;
+
 		GameObject piece = null;
 
 		for (int j = 0; j < listPieces.Count; j++) {
@@ -330,11 +342,18 @@ public class Snake : MonoBehaviour {
 		this.dist += this.cellWidth * this.speed;
 
 		if (this.dist >= this.cellWidth) {
+
+
 			
 			for (int j = 0; j < listPieces.Count; j++) {
 				piece = (GameObject)listPieces [j];
 				piece.GetComponent<SNPiece> ().updateCell ();
 			}
+			this.dist = 0;
+		}
+
+		if (this.boundariesCollide (this.head)) {
+			this.gameStatus = Snake.STATUS_GAME_OVER;
 		}
 
 	}
@@ -357,23 +376,33 @@ public class Snake : MonoBehaviour {
 
 	private void handleInput()
 	{
-		SNCell cell = getCell (head.GetComponent<SNPiece> ().row, head.GetComponent<SNPiece> ().column);
-
 		
-		if (Input.GetKey ("up")) {
-			cell.direction = Vector3.up;
+		SNPiece sn = head.GetComponent<SNPiece> ();
+		SNCell cell = sn.getNextCell ();
 
-		} else if (Input.GetKey ("down")) {
-			cell.direction = Vector3.down;
+		if (sn.direction != Vector3.up && sn.direction != Vector3.down) {
+			if (Input.GetKey ("up")) {
+				cell.direction = Vector3.up;
+
+			} else if (Input.GetKey ("down")) {
+				cell.direction = Vector3.down;
 			
-		} else if (Input.GetKey ("left")) {
-			cell.direction = Vector3.left;
-			
-		} else if (Input.GetKey ("right")) {
-
-			cell.direction = Vector3.right;
-
+			} 
 		}
+
+		if (sn.direction != Vector3.left && sn.direction != Vector3.right) {
+			if (Input.GetKey ("left")) {
+				cell.direction = Vector3.left;
+			
+			} else if (Input.GetKey ("right")) {
+
+				cell.direction = Vector3.right;
+
+			}
+		}
+
+
+		//Debug.Break ();
 		
 	}
 

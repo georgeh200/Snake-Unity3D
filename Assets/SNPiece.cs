@@ -24,22 +24,7 @@ public class SNPiece : MonoBehaviour {
 
 	}
 	
-	// Update is called once per frame
-//	void FixedUpdate () {
-		 
-//		if (snake.gameStatus != Snake.STATUS_RUNNING)
-//			return;
-				
-	//	SNCell cell = snake.getMyCell (this.gameObject);
-	//	Debug.Log ("1:"+this.gameObject.transform.position.x);
-	//	Debug.Log ("2:"+this.transform.position.x);
-	//	if (cell.direction != Vector3.zero && Vector3.Distance (this.transform.position, cell.getCenter ()) < 0.05f)
-	//		this.direction = cell.direction;
-		//Debug.Log ("this.direction:"+this.direction.y);		
 
-	
-		
-//	}
 
 	public void move()
 	{
@@ -59,6 +44,35 @@ public class SNPiece : MonoBehaviour {
 		}
 
 		SNCell cell = snake.getCell (this.row, this.column);
+		if (cell.direction != Vector3.zero) {
+			this.direction = cell.direction;
+			if (snake.lastPieceInSnake (this.gameObject)) {
+				cell.direction = Vector3.zero;
+			}
+		}
+	//	Debug.Log ("updateCellupdateCell");
+	//	Debug.Log ("row:"+cell.row);
+	//	Debug.Log ("column:"+cell.column);
+		//Debug.Break ();
 		this.transform.position = cell.getCenter ();
+	}
+
+	public SNCell getNextCell()
+	{
+		int rr = this.row;
+		int cc = this.column;
+
+		if (this.direction == Vector3.up) {
+			rr++;
+		} else if (this.direction == Vector3.down) {
+			rr--;
+		} else if (this.direction == Vector3.left) {
+			cc--;
+		} else if (this.direction == Vector3.right) {
+			cc++;
+		}
+
+		return snake.getCell (rr,cc);
+
 	}
 }

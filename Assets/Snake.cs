@@ -20,13 +20,15 @@ public class Snake : MonoBehaviour {
 	private SNCell [,] arrCells;
 	private ArrayList listPieces;
 
-	private int	colums;	
-	private int rows;
+	public int	colums;	
+	public int rows;
 	private static Snake instance;
+
+	private int foodNumber;
 
 
 	public Vector3 direction=Vector3.down;
-	public float speed=0.01f;
+	public float speed=0.1f;
 	private float gameTime=0;
 	private float snakeScreenWidth;
 	private float snakeScreenHeight;
@@ -108,8 +110,8 @@ public class Snake : MonoBehaviour {
 
 		snakeScreenHeight = Vector3.Distance(p1, p2) ;	
 
-			colums =  (int)Mathf.Floor( (snakeScreenWidth-0.5f) / cellWidth);
-			rows= (int)Mathf.Floor((snakeScreenHeight-0.5f) / cellHeight);
+			colums =  (int)Mathf.Floor( (snakeScreenWidth-1.0f) / cellWidth);
+			rows= (int)Mathf.Floor((snakeScreenHeight-1.0f) / cellHeight);
 
 		gameWidth = colums * cellWidth;
 		gameHeight= rows * cellHeight;
@@ -185,7 +187,7 @@ public class Snake : MonoBehaviour {
 
 		GameObject piece = null;
 		Vector3 p = Vector3.zero;
-		for(int j=rr+1;j<rr+10;j++)
+		for(int j=rr+1;j<rr+5;j++)
 		{
 			p=new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ j * cellHeight+cellHeight/2, 0);
 			piece=(GameObject)Instantiate(this.prfPiece, p, Quaternion.identity);
@@ -268,6 +270,21 @@ public class Snake : MonoBehaviour {
 	public void snakeCollideitSelf()
 	{
 		this.gameStatus = Snake.STATUS_GAME_OVER;
+		Debug.Break ();
+	}
+
+	public void eatFood()
+	{
+		this.foodNumber++;
+		SNFood.getInstance ().eaten ();
+		//Debug.Break ();
+		GameObject newPiece=(GameObject)Instantiate(this.prfPiece, new Vector3 (0, 0, 0), Quaternion.identity);
+
+		GameObject lastPiece = (GameObject)listPieces [listPieces.Count - 1];
+		lastPiece.GetComponent<SNPiece> ().attachPiece (newPiece);
+		SNPiece pt = newPiece.GetComponent<SNPiece> ();
+		listPieces.Add (newPiece);
+
 	}
 	void FixedUpdate () {
 
@@ -291,6 +308,7 @@ public class Snake : MonoBehaviour {
 			for (int j = 0; j < listPieces.Count; j++) {
 				piece = (GameObject)listPieces [j];
 				piece.GetComponent<SNPiece> ().updateCell ();
+
 			}
 			this.dist = 0;
 		}
@@ -311,6 +329,7 @@ public class Snake : MonoBehaviour {
 		}
 		this.handleInput ();
 		gameTime += Time.deltaTime;
+		SNFood.getInstance ().generate ();
 
 
 	

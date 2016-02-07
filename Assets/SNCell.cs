@@ -12,6 +12,7 @@ public class SNCell  {
 
 	public GameObject 	runningPiece;
 	public GameObject exitPiece;
+	public bool hasFood = false;
 
 	public Vector3 getCenter()
 	{

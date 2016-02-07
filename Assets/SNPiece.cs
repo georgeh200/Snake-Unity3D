@@ -5,7 +5,7 @@ public class SNPiece : MonoBehaviour {
 
 	public int index;
 	private Snake snake;
-	public Vector3 direction;
+	public Vector3 direction=Vector3.zero;
 
 	public int row;
 	public int column;	
@@ -20,7 +20,7 @@ public class SNPiece : MonoBehaviour {
 	void Start () {
 
 
-		this.direction = snake.direction;
+
 
 	}
 	
@@ -28,7 +28,9 @@ public class SNPiece : MonoBehaviour {
 
 	public void move()
 	{
-		this.transform.position = transform.position + (this.direction *snake.cellWidth* snake.speed);
+		if(this.direction==Vector3.zero)
+		this.direction = snake.direction;
+		this.transform.position = this.transform.position + (this.direction *snake.cellWidth* snake.speed);
 	}
 
 	public void updateCell()
@@ -52,6 +54,10 @@ public class SNPiece : MonoBehaviour {
 			snake.snakeCollideitSelf ();
 		}
 		cell.runningPiece = this.gameObject;
+		if (cell.hasFood) {
+			snake.eatFood ();
+			cell.hasFood = false;
+		}
 
 		if (cell.direction != Vector3.zero) {
 			this.direction = cell.direction;
@@ -82,6 +88,39 @@ public class SNPiece : MonoBehaviour {
 		}
 
 		return snake.getCell (rr,cc);
+
+	}
+
+	public void attachPiece(GameObject piece)
+	{
+		int rr = this.row;
+		int cc = this.column;
+
+		Vector3 pp = this.transform.position;
+		Vector3 pos = Vector3.zero;
+		if (this.direction == Vector3.up) {
+			rr-=1;
+			pos = new Vector3 (pp.x, pp.y-this.transform.localScale.y, 0);
+		} else if (this.direction == Vector3.down) {
+			rr+=1;
+			pos = new Vector3 (pp.x, pp.y+this.transform.localScale.y, 0);
+		} else if (this.direction == Vector3.left) {
+			cc+=1;
+			pos = new Vector3 (pp.x+this.transform.localScale.x, pp.y, 0);
+		} else if (this.direction == Vector3.right) {
+			cc-=1;
+			pos = new Vector3 (pp.x-this.transform.localScale.x, pp.y, 0);
+		}
+
+		piece.transform.position = pos;
+		SNCell cell = snake.getCell (rr, cc);
+
+		piece.GetComponent<SNPiece> ().direction = this.direction;
+		piece.GetComponent<SNPiece> ().row = rr;
+		piece.GetComponent<SNPiece> ().column = cc;
+		cell.runningPiece=piece;
+
+
 
 	}
 }

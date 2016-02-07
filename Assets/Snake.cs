@@ -5,10 +5,12 @@ public class Snake : MonoBehaviour {
 
 
 
-	public GameObject food;
+	public GameObject prfFood;
+	public GameObject prfPiece;
 
 
 	private ArrayList listCells;
+	private ArrayList listPieces;
 
 	private int	colums;
 	private int rows;
@@ -34,6 +36,7 @@ public class Snake : MonoBehaviour {
 	public Snake()
 	{
 		listCells = new ArrayList ();
+		listPieces = new ArrayList ();
 		instance = this;
 	}
 
@@ -44,9 +47,16 @@ public class Snake : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
-		this.cellWidth = this.transform.localScale.x;
-		this.cellHeight = this.transform.localScale.y;
+
+
+		//instantiate some pieces
+
+		GameObject piece=(GameObject)Instantiate(this.prfPiece, new Vector3 (0, 0, 0), Quaternion.identity);
+
+		this.cellWidth = piece.transform.localScale.x;
+		this.cellHeight = piece.transform.localScale.y;
+
+		listPieces.Add (piece);
 
 
 
@@ -107,12 +117,28 @@ public class Snake : MonoBehaviour {
 		drawGrid ();
 
 	
+		addInitialPieces ();
 
 
 
 
 
+	}
 
+	private void addInitialPieces()
+	{
+		GameObject piece =(GameObject) listPieces [0];
+		int rr = rows / 2;
+		int cc = colums / 2;
+		piece.transform.position = new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ rr * cellHeight+cellHeight/2, 0);
+
+		Vector3 p = Vector3.zero;
+		for(int j=rr+1;j<rr+6;j++)
+		{
+			p=new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ j * cellHeight+cellHeight/2, 0);;
+			piece=(GameObject)Instantiate(this.prfPiece, p, Quaternion.identity);
+			listPieces.Add (piece);
+		}
 	}
 
 
@@ -184,7 +210,8 @@ public class Snake : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		
+		if (true)
+			return;
 		this.handleInput ();
 		gameTime += Time.deltaTime;
 		Vector3 newPos = transform.position + (this.direction * cellWidth);

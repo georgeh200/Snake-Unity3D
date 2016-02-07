@@ -30,7 +30,15 @@ public class SNPiece : MonoBehaviour {
 	{
 		if(this.direction==Vector3.zero)
 		this.direction = snake.direction;
+
 		this.transform.position = this.transform.position + (this.direction *snake.cellWidth* snake.speed);
+	}
+
+
+	public void reverseMove()
+	{	
+			
+		this.transform.position = this.transform.position - (this.direction *snake.cellWidth* snake.speed);
 	}
 
 	public void updateCell()

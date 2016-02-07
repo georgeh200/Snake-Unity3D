@@ -12,6 +12,7 @@ public class Snake : MonoBehaviour {
 
 
 
+
 	public int gameStatus;
 
 	private GameObject head;
@@ -28,7 +29,10 @@ public class Snake : MonoBehaviour {
 
 
 	public Vector3 direction=Vector3.down;
-	public float speed=0.1f;
+	[HideInInspector] 
+
+	public float speed;
+
 	private float gameTime=0;
 	private float snakeScreenWidth;
 	private float snakeScreenHeight;
@@ -61,6 +65,7 @@ public class Snake : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		this.speed = 0.1f;
 		this.direction = Vector3.down;
 
 		//instantiate some pieces
@@ -403,7 +408,17 @@ public class Snake : MonoBehaviour {
 	void OnGUI()
 	{
 		guiStyle.fontSize = 15;
+
 		GUI.Label(new Rect(5, 5, 100, 30), "Food: "+this.foodNumber, guiStyle);
+
+
+		if (this.gameStatus == Snake.STATUS_GAME_OVER) {
+			guiStyle.fontSize = 30;
+			GUI.Label(new Rect(Screen.width/2-50, Screen.height/2, 100, 30), "GAME OVER", guiStyle);
+
+			guiStyle.fontSize = 15;
+			GUI.Label(new Rect(Screen.width/2-50, Screen.height/2+30, 100, 30), "Click here to restart", guiStyle);
+		}
 	}
 
 

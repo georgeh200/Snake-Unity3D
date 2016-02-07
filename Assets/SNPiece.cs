@@ -30,8 +30,8 @@ public class SNPiece : MonoBehaviour {
 		this.direction = snake.direction;
 		//Debug.Log ("this.direction:"+this.direction.y);		
 		if(this.direction.x==0)
-			this.transform.position = transform.position + (this.direction *snake.cellHeight/10* snake.speed);
-		else this.transform.position = transform.position + (this.direction *snake.cellWidth/10* snake.speed);
+			this.transform.position = transform.position + (this.direction *snake.cellHeight* snake.speed);
+		else this.transform.position = transform.position + (this.direction *snake.cellWidth* snake.speed);
 		
 	}
 }

@@ -24,7 +24,7 @@ public class Snake : MonoBehaviour {
 
 
 	public Vector3 direction=Vector3.down;
-	public float speed=0.00001f;
+	public float speed=0.1f;
 	private float gameTime=0;
 	private float snakeScreenWidth;
 	private float snakeScreenHeight;
@@ -92,20 +92,20 @@ public class Snake : MonoBehaviour {
 			cell = (SNCell)listCells [j];
 
 			if (direction.y > 0) {
-				Debug.Log ("if (direction.y > 0)");
-			if((piece.transform.position.y+piece.transform.localScale.y/2)>cell.y&&
-				(piece.transform.position.y+piece.transform.localScale.y/2)<(cell.y+cell.height)
-					&& Mathf.Abs(  cell.x=piece.transform.position.x-piece.transform.localScale.x/2)<0.05f)
+				
+				if((piece.transform.position.y+piece.transform.localScale.y/2)<(cell.y+cell.height)&&
+				(piece.transform.position.y+piece.transform.localScale.y/2)>cell.y
+					&&Mathf.Abs( cell.x-piece.transform.position.x-piece.transform.localScale.x/2)<0.05f)
 				{
 				return cell;
 				}
 
 			}
 			else if (direction.y < 0) {
-				Debug.Log ("else if (direction.y < 0)");
+				
 				if((piece.transform.position.y-piece.transform.localScale.y/2)>cell.y&&
-					(piece.transform.position.y-piece.transform.localScale.y/2)<(cell.y-cell.height)
-					&&Mathf.Abs( cell.x-(piece.transform.position.x-piece.transform.localScale.x/2))<0.05f)
+					(piece.transform.position.y-piece.transform.localScale.y/2)<(cell.y+cell.height)
+					&&Mathf.Abs( cell.x-piece.transform.position.x-piece.transform.localScale.x/2)<0.05f)
 				{
 					return cell;
 				}
@@ -114,10 +114,10 @@ public class Snake : MonoBehaviour {
 				
 			}
 			else if (direction.x > 0) {
-				Debug.Log ("else if (direction.x > 0)");
+				
 				if((piece.transform.position.x+piece.transform.localScale.x/2)>cell.x&&
 					(piece.transform.position.x+piece.transform.localScale.x/2)<(cell.x+cell.width)
-					&&cell.y==piece.transform.position.y-piece.transform.localScale.y/2)
+					&&Mathf.Abs(cell.y-piece.transform.position.y-piece.transform.localScale.y/2)<0.05f)
 				{
 					return cell;
 				}
@@ -125,10 +125,10 @@ public class Snake : MonoBehaviour {
 				
 			}
 			else if (direction.x < 0) {
-				Debug.Log ("else if (direction.x < 0)");
+				
 				if((piece.transform.position.x-piece.transform.localScale.x/2)>cell.x&&
 					(piece.transform.position.x-piece.transform.localScale.x/2)<(cell.x+cell.width)
-					&&cell.y==piece.transform.position.y-piece.transform.localScale.y/2)
+					&&Mathf.Abs(cell.y-piece.transform.position.y-piece.transform.localScale.y/2)<0.05f)
 				{
 					return cell;
 				}
@@ -192,7 +192,10 @@ public class Snake : MonoBehaviour {
 		addInitialPieces ();
 
 
+		for (int j = 0; j < listCells.Count; j++) {
 
+		//	Debug.Log (((SNCell)listCells [j]).x);
+		}
 
 
 	}
@@ -206,7 +209,7 @@ public class Snake : MonoBehaviour {
 
 		GameObject piece = null;
 		Vector3 p = Vector3.zero;
-		for(int j=rr+1;j<rr+1;j++)
+		for(int j=rr+1;j<rr+6;j++)
 		{
 			p=new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ j * cellHeight+cellHeight/2, 0);;
 			piece=(GameObject)Instantiate(this.prfPiece, p, Quaternion.identity);
@@ -306,9 +309,41 @@ public class Snake : MonoBehaviour {
 	{
 		
 		if (Input.GetKey ("up")) {
-			
-			this.direction = Vector3.up;
+			SNCell cell = getMyCell (head);
+
+
+
+			Debug.Log ("piece.transform.position.x:" + head.transform.position.x);
+			Debug.Log ("piece.transform.position.y:" + head.transform.position.y);
+			Debug.Log ("cell.x:" + cell.x);
+			Debug.Log ("cell.y:" + cell.y);
+		//	Debug.Break ();
+			//this.direction = Vector3.up;
 		} else if (Input.GetKey ("down")) {
+			SNCell cell = getMyCell (head);
+
+
+
+			Debug.Log ("piece.transform.position.x:" + head.transform.position.x);
+			Debug.Log ("piece.transform.position.y:" + head.transform.position.y);
+			Debug.Log ("cell.x:" + cell.x);
+			Debug.Log ("cell.y:" + cell.y);
+			//Debug.Break ();
+
+			//this.direction = Vector3.down;
+		} else if (Input.GetKey ("left")) {
+			//	this.direction = Vector3.left;
+			SNCell cell = getMyCell (head);
+
+
+
+			Debug.Log ("piece.transform.position.x:" + head.transform.position.x);
+			Debug.Log ("piece.transform.position.y:" + head.transform.position.y);
+			Debug.Log ("cell.x:" + cell.x);
+			Debug.Log ("cell.y:" + cell.y);
+		//	Debug.Break ();
+		} else if (Input.GetKey ("right")) {
+		//	this.direction = Vector3.right;
 			SNCell cell= getMyCell (head);
 
 
@@ -317,14 +352,8 @@ public class Snake : MonoBehaviour {
 			Debug.Log("piece.transform.position.y:"+head.transform.position.y);
 			Debug.Log("cell.x:"+cell.x);
 			Debug.Log("cell.y:"+cell.y);
-			Debug.Break ();
-
-			this.direction = Vector3.down;
+		//	Debug.Break ();
 		}
-		else if (Input.GetKey ("left"))
-			this.direction = Vector3.left;
-		else if (Input.GetKey ("right"))
-			this.direction = Vector3.right;
 		
 	}
 

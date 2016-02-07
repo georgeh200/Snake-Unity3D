@@ -18,4 +18,11 @@ public class SNCell  {
 	{
 		return new Vector3 (this.x + this.width / 2, this.y + this.height / 2, 0);
 	}
+
+	public void reset()
+	{
+		this.runningPiece = null;
+		this.exitPiece = null;
+		this.hasFood = false;
+	}
 }

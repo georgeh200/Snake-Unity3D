@@ -62,21 +62,40 @@ public class Snake : MonoBehaviour {
 	{
 		return instance;
 	}
+	private void restart()
+	{
+		this.gameStatus = Snake.STATUS_RUNNING;
+		this.foodNumber = 0;
+		for (int j = 0; j < listPieces.Count; j++) {
+			Destroy ((GameObject)listPieces [j]);
+		}
+		this.listPieces.Clear ();
+		SNFood.getInstance ().reset ();
 
+		SNCell cell = null;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < colums; j++) {
+
+				cell = new SNCell ();
+				cell.reset();
+			}
+		}
+
+		direction = Vector3.down;
+		initializeHead ();
+		addInitialPieces ();
+
+
+	}
 	// Use this for initialization
 	void Start () {
-		this.speed = 0.1f;
+		this.speed = 0.15f;
 		this.direction = Vector3.down;
 
 		//instantiate some pieces
 
-		head=(GameObject)Instantiate(this.prfPiece, new Vector3 (0, 0, 0), Quaternion.identity);
 
-		this.cellWidth = head.transform.localScale.x;
-		this.cellHeight = head.transform.localScale.y;
-
-		listPieces.Add (head);
-
+		initializeHead ();
 
 
 
@@ -84,6 +103,16 @@ public class Snake : MonoBehaviour {
 		this.gameStatus = Snake.STATUS_RUNNING;
 		direction = Vector3.down;
 
+	}
+
+	private void initializeHead()
+	{
+		head=(GameObject)Instantiate(this.prfPiece, new Vector3 (0, 0, 0), Quaternion.identity);
+
+		this.cellWidth = head.transform.localScale.x;
+		this.cellHeight = head.transform.localScale.y;
+
+		listPieces.Add (head);
 	}
 
 
@@ -275,7 +304,7 @@ public class Snake : MonoBehaviour {
 	public void snakeCollideitSelf()
 	{
 		this.gameStatus = Snake.STATUS_GAME_OVER;
-		Debug.Break ();
+		//Debug.Break ();
 	}
 
 	public void eatFood()
@@ -326,13 +355,15 @@ public class Snake : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		this.handleInput ();
+
 		if (this.gameStatus != Snake.STATUS_RUNNING)
 			return;
 		if (this.boundariesCollide (head)) {
 			this.gameStatus = Snake.STATUS_GAME_OVER;
 			return ;
 		}
-		this.handleInput ();
+
 		gameTime += Time.deltaTime;
 		SNFood.getInstance ().generate ();
 
@@ -343,6 +374,16 @@ public class Snake : MonoBehaviour {
 
 	private void handleInput()
 	{
+
+		if(this.gameStatus==Snake.STATUS_GAME_OVER)
+		{
+			if (Input.GetMouseButtonDown (0)) {
+
+				restart ();
+			}
+
+			return;
+		}
 		
 		SNPiece sn = head.GetComponent<SNPiece> ();
 		SNCell cell = sn.getNextCell ();
@@ -366,6 +407,7 @@ public class Snake : MonoBehaviour {
 				cell.direction = Vector3.right;
 
 			}
+
 		}
 
 

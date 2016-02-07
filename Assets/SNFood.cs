@@ -36,14 +36,19 @@ public class SNFood : MonoBehaviour {
 		this.myCell.hasFood = false;
 		this.myCell = null;
 	}
+	public void reset()
+	{
+		this.enabled = false;
+		this.myCell = null;
+	}
 	public void generate()
 	{
 		if (this.enabled)
 			return;
 		
 		for (int j = 0; j < 5; j++) {
-			int r = (int)Mathf.Floor (Random.Range (0, snake.rows - 1));
-			int c = (int)Mathf.Floor (Random.Range (0, snake.colums - 1));
+			int r = (int)Mathf.Floor (Random.Range (1, snake.rows - 1));
+			int c = (int)Mathf.Floor (Random.Range (1, snake.colums - 1));
 
 			SNCell cell = snake.getCell (r, c);
 			if (cell.runningPiece == null) {

@@ -39,6 +39,8 @@ public class Snake : MonoBehaviour {
 	public float cellHeight=0;
 	private Rect rect1;
 
+	private float dist;
+
 
 	public Snake()
 	{
@@ -85,6 +87,10 @@ public class Snake : MonoBehaviour {
 		return (piece.index == (listPieces.Count - 1));
 	}
 
+	public SNCell getCell(int r, int c)
+	{
+		return arrCells[r,c];
+	}
 
 	public SNCell getMyCell(GameObject piece)
 	{
@@ -232,7 +238,7 @@ public class Snake : MonoBehaviour {
 
 		GameObject piece = null;
 		Vector3 p = Vector3.zero;
-		for(int j=rr+1;j<rr+6;j++)
+		for(int j=rr+1;j<rr+2;j++)
 		{
 			p=new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ j * cellHeight+cellHeight/2, 0);
 			piece=(GameObject)Instantiate(this.prfPiece, p, Quaternion.identity);
@@ -310,6 +316,28 @@ public class Snake : MonoBehaviour {
 		return line;
 	}
 
+
+
+	void FixedUpdate () {
+
+		GameObject piece = null;
+
+		for (int j = 0; j < listPieces.Count; j++) {
+			piece = (GameObject)listPieces [j];
+			piece.GetComponent<SNPiece> ().move ();
+		}
+
+		this.dist += this.cellWidth * this.speed;
+
+		if (this.dist >= this.cellWidth) {
+			
+			for (int j = 0; j < listPieces.Count; j++) {
+				piece = (GameObject)listPieces [j];
+				piece.GetComponent<SNPiece> ().updateCell ();
+			}
+		}
+
+	}
 	// Update is called once per frame
 	void Update () {
 
@@ -324,62 +352,27 @@ public class Snake : MonoBehaviour {
 
 
 	
-		/*	Vector3 newPos = transform.position + (this.direction * cellWidth);
 
-
-			if (!this.boundariesCollide (newPos,this.gameObject))
-				this.transform.position = newPos;*/
 	}
 
 	private void handleInput()
 	{
+		SNCell cell = getCell (head.GetComponent<SNPiece> ().row, head.GetComponent<SNPiece> ().column);
+
 		
 		if (Input.GetKey ("up")) {
-			SNCell cell = getMyCell (head);
-
-
-
-			Debug.Log ("piece.transform.position.x:" + head.transform.position.x);
-			Debug.Log ("piece.transform.position.y:" + head.transform.position.y);
-			Debug.Log ("cell.x:" + cell.x);
-			Debug.Log ("cell.y:" + cell.y);
 			cell.direction = Vector3.up;
-		//	Debug.Break ();
-			//this.direction = Vector3.up;
+
 		} else if (Input.GetKey ("down")) {
-			SNCell cell = getMyCell (head);
-
 			cell.direction = Vector3.down;
-
-			Debug.Log ("piece.transform.position.x:" + head.transform.position.x);
-			Debug.Log ("piece.transform.position.y:" + head.transform.position.y);
-			Debug.Log ("cell.x:" + cell.x);
-			Debug.Log ("cell.y:" + cell.y);
-			//Debug.Break ();
-
-			//this.direction = Vector3.down;
+			
 		} else if (Input.GetKey ("left")) {
-			//	this.direction = Vector3.left;
-			SNCell cell = getMyCell (head);
-
 			cell.direction = Vector3.left;
-
-			Debug.Log ("piece.transform.position.x:" + head.transform.position.x);
-			Debug.Log ("piece.transform.position.y:" + head.transform.position.y);
-			Debug.Log ("cell.x:" + cell.x);
-			Debug.Log ("cell.y:" + cell.y);
-		//	Debug.Break ();
+			
 		} else if (Input.GetKey ("right")) {
-		//	this.direction = Vector3.right;
-			SNCell cell= getMyCell (head);
 
 			cell.direction = Vector3.right;
 
-			Debug.Log("piece.transform.position.x:"+head.transform.position.x);
-			Debug.Log("piece.transform.position.y:"+head.transform.position.y);
-			Debug.Log("cell.x:"+cell.x);
-			Debug.Log("cell.y:"+cell.y);
-		//	Debug.Break ();
 		}
 		
 	}

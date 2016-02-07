@@ -25,10 +25,10 @@ public class SNPiece : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+//	void FixedUpdate () {
 		 
-		if (snake.gameStatus != Snake.STATUS_RUNNING)
-			return;
+//		if (snake.gameStatus != Snake.STATUS_RUNNING)
+//			return;
 				
 	//	SNCell cell = snake.getMyCell (this.gameObject);
 	//	Debug.Log ("1:"+this.gameObject.transform.position.x);
@@ -37,8 +37,13 @@ public class SNPiece : MonoBehaviour {
 	//		this.direction = cell.direction;
 		//Debug.Log ("this.direction:"+this.direction.y);		
 
-	this.transform.position = transform.position + (this.direction *snake.cellWidth* snake.speed);
+	
 		
+//	}
+
+	public void move()
+	{
+		this.transform.position = transform.position + (this.direction *snake.cellWidth* snake.speed);
 	}
 
 	public void updateCell()
@@ -52,5 +57,8 @@ public class SNPiece : MonoBehaviour {
 		} else if (this.direction == Vector3.right) {
 			this.column++;
 		}
+
+		SNCell cell = snake.getCell (this.row, this.column);
+		this.transform.position = cell.getCenter ();
 	}
 }

@@ -4,12 +4,15 @@ using System.Collections;
 public class Snake : MonoBehaviour {
 
 
+
 	public GameObject food;
 
 
+	private ArrayList listCells;
 
-
-
+	private int	colums;
+	private int rows;
+	private static Snake instance;
 
 
 	private Vector3 direction=Vector3.up;
@@ -24,18 +27,26 @@ public class Snake : MonoBehaviour {
 
 
 	private float cellWidth=0;
+	private float cellHeight=0;
 	private Rect rect1;
 
 
 	public Snake()
 	{
-		
+		listCells = new ArrayList ();
+		instance = this;
+	}
+
+	public static Snake getInstance()
+	{
+		return instance;
 	}
 
 	// Use this for initialization
 	void Start () {
 		
 		this.cellWidth = this.transform.localScale.x;
+		this.cellHeight = this.transform.localScale.y;
 
 
 
@@ -55,11 +66,11 @@ public class Snake : MonoBehaviour {
 
 		snakeScreenHeight = Vector3.Distance(p1, p2) ;	
 
-		int	colums =  (int)Mathf.Floor( (snakeScreenWidth-0.5f) / cellWidth);
-		int	rows= (int)Mathf.Floor((snakeScreenHeight-0.5f) / cellWidth);
+			colums =  (int)Mathf.Floor( (snakeScreenWidth-0.5f) / cellWidth);
+			rows= (int)Mathf.Floor((snakeScreenHeight-0.5f) / cellHeight);
 
 		gameWidth = colums * cellWidth;
-		gameHeight= rows * cellWidth;
+		gameHeight= rows * cellHeight;
 		startX =  snakeScreenWidth/2-(snakeScreenWidth - gameWidth) / 2;
 		startY = snakeScreenHeight/2-(snakeScreenHeight - gameHeight) / 2;
 
@@ -76,7 +87,24 @@ public class Snake : MonoBehaviour {
 		Debug.Log ("startXstartX:"+startX);
 		Debug.Log ("startXstartyy:"+startY);
 
-		drawBounadries ();
+
+		SNCell cell = null;
+
+		for (int j = 0; j < colums; j++)
+			for (int i = 0; i < rows; i++) {
+				cell = new SNCell ();
+				cell.x = startX + j * cellWidth;
+				cell.y = startY + i * cellHeight;
+				cell.width = cellWidth;
+				cell.height = cellHeight;
+				listCells.Add (cell);
+			}
+	//	Debug.Log ("cell count:"+rows);
+	//	Debug.Log ("cell count:"+colums);
+	//	Debug.Log ("cell count:"+listCells.Count);
+
+
+		drawGrid ();
 
 	
 
@@ -88,7 +116,7 @@ public class Snake : MonoBehaviour {
 	}
 
 
-	private void drawBounadries()
+	private void drawGrid()
 	{
 		LineRenderer line = getEdgeLine ();
 
@@ -110,6 +138,28 @@ public class Snake : MonoBehaviour {
 		line.SetPosition(0,new Vector3(startX,startY+gameHeight,0));
 		line.SetPosition(1,new Vector3(startX,startY,0));
 
+
+
+
+
+	//	for (int j = 0; j < colums; j++)
+	//		for (int i = 0; i < rows; i++) {
+
+
+		for (int j = 1; j < colums; j++) {
+			line = getGridLine ();
+			line.SetPosition (0, new Vector3 (startX + j * cellWidth, startY, 0));
+			line.SetPosition (1, new Vector3 (startX + j * cellWidth, startY+gameHeight, 0));
+		}
+
+		for (int j = 1; j < rows; j++) {
+			line = getGridLine ();
+			line.SetPosition (0, new Vector3 (startX , startY+j*cellHeight, 0));
+			line.SetPosition (1, new Vector3 (startX + gameWidth, startY+j*cellHeight, 0));
+		}
+
+
+
 	}
 
 	private LineRenderer getEdgeLine()
@@ -122,12 +172,22 @@ public class Snake : MonoBehaviour {
 		return line;
 	}
 
+	private LineRenderer getGridLine()
+	{
+		GameObject gameObject = new GameObject ("");
+		gameObject.AddComponent<LineRenderer> ();
+		LineRenderer line = gameObject.GetComponent<LineRenderer> ();
+		line.SetWidth (0.01f, 0.01f);
+		line.SetVertexCount (2);
+		return line;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		
 		this.handleInput ();
 		gameTime += Time.deltaTime;
-		Vector3 newPos = transform.position + (this.direction * Time.deltaTime * speed);
+		Vector3 newPos = transform.position + (this.direction * cellWidth);
 
 
 		if (!this.boundariesCollide (newPos,this.gameObject))

@@ -282,7 +282,7 @@ public class Snake : MonoBehaviour {
 
 		GameObject lastPiece = (GameObject)listPieces [listPieces.Count - 1];
 		lastPiece.GetComponent<SNPiece> ().attachPiece (newPiece);
-		SNPiece pt = newPiece.GetComponent<SNPiece> ();
+
 		listPieces.Add (newPiece);
 
 	}
@@ -396,52 +396,23 @@ public class Snake : MonoBehaviour {
 		return false;
 
 
-	/*	Renderer renderer= gameObject.GetComponent<Renderer> ();
-		p += new Vector3 (renderer.bounds.size.x / 2, renderer.bounds.size.y / 2, renderer.bounds.size.z / 2);
-
-		Vector3 viewPos = Camera.main.WorldToViewportPoint(p);
-		viewPos.x = Mathf.Clamp01(viewPos.x);
-		viewPos.y = Mathf.Clamp01(viewPos.y);
-
-
-
-		if(viewPos.y<=0||viewPos.y>=1||viewPos.x<=0||viewPos.x>=1)
-			return true;
-		else
-		return false;*/
+	
 	}
 
-
-
-
-
-
-
-
-
-	private Texture2D whiteTexture;
-//	void OnGUI()
-//	{
-	//	if(this.whiteTexture==null)
-	//		this.whiteTexture=Texture2D.whiteTexture;
-		
-	//	drawHorizontalLine (new Vector2 (10, 10), new Vector2 (100, 10),Color.red);
-
-	//	drawVerticalLine (new Vector2 (10, 10), new Vector2 (100, 100),Color.red);
-
-	//	GUI.Label (, new Color(0,0,0,1));
-//	}
-
-	private void drawHorizontalLine(Vector2 p1,Vector2 p2,Color color)
+	private GUIStyle guiStyle = new GUIStyle();
+	void OnGUI()
 	{
-		GUI.color = color;
-		GUI.DrawTexture(new Rect (p1.x, p1.y, p2.x, 2), this.whiteTexture, ScaleMode.StretchToFill);
+		guiStyle.fontSize = 15;
+		GUI.Label(new Rect(5, 5, 100, 30), "Food: "+this.foodNumber, guiStyle);
 	}
 
-	private void drawVerticalLine(Vector2 p1,Vector2 p2,Color color)
-	{
-		GUI.color = color;
-		GUI.DrawTexture(new Rect (p1.x, p1.y, 2, p2.y), this.whiteTexture, ScaleMode.StretchToFill);
-	}
+
+
+
+
+
+
+
+
 
 }

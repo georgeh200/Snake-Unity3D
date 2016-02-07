@@ -4,21 +4,27 @@ using System.Collections;
 public class Snake : MonoBehaviour {
 
 
+	public const int STATUS_RUNNING = 1;
+	public const int STATUS_GAME_OVER = 2;
 
 	public GameObject prfFood;
 	public GameObject prfPiece;
 
 
+
+	public int gameStatus;
+
+	private GameObject head;
 	private ArrayList listCells;
 	private ArrayList listPieces;
 
-	private int	colums;
+	private int	colums;	
 	private int rows;
 	private static Snake instance;
 
 
-	private Vector3 direction=Vector3.up;
-	private float speed=0.9f;
+	public Vector3 direction=Vector3.down;
+	public float speed=0.00001f;
 	private float gameTime=0;
 	private float snakeScreenWidth;
 	private float snakeScreenHeight;
@@ -28,13 +34,14 @@ public class Snake : MonoBehaviour {
 	private float startY;
 
 
-	private float cellWidth=0;
-	private float cellHeight=0;
+	public float cellWidth=0;
+	public float cellHeight=0;
 	private Rect rect1;
 
 
 	public Snake()
 	{
+		
 		listCells = new ArrayList ();
 		listPieces = new ArrayList ();
 		instance = this;
@@ -51,18 +58,85 @@ public class Snake : MonoBehaviour {
 
 		//instantiate some pieces
 
-		GameObject piece=(GameObject)Instantiate(this.prfPiece, new Vector3 (0, 0, 0), Quaternion.identity);
+		head=(GameObject)Instantiate(this.prfPiece, new Vector3 (0, 0, 0), Quaternion.identity);
 
-		this.cellWidth = piece.transform.localScale.x;
-		this.cellHeight = piece.transform.localScale.y;
+		this.cellWidth = head.transform.localScale.x;
+		this.cellHeight = head.transform.localScale.y;
 
-		listPieces.Add (piece);
+		listPieces.Add (head);
 
 
 
 
 		setupGame ();
+		this.gameStatus = Snake.STATUS_RUNNING;
+		direction = Vector3.down;
 
+	}
+
+
+	public int getMyCellIndex()
+	{
+		return listPieces.Count;
+	}
+	public bool isLastPiece(SNPiece piece)
+	{
+		return (piece.index == (listPieces.Count - 1));
+	}
+
+
+	public SNCell getMyCell(GameObject piece)
+	{
+		SNCell cell = null;
+		for (int j = 0; j < listCells.Count; j++) {
+			cell = (SNCell)listCells [j];
+
+			if (direction.y > 0) {
+				Debug.Log ("if (direction.y > 0)");
+			if((piece.transform.position.y+piece.transform.localScale.y/2)>cell.y&&
+				(piece.transform.position.y+piece.transform.localScale.y/2)<(cell.y+cell.height)
+					&& Mathf.Abs(  cell.x=piece.transform.position.x-piece.transform.localScale.x/2)<0.05f)
+				{
+				return cell;
+				}
+
+			}
+			else if (direction.y < 0) {
+				Debug.Log ("else if (direction.y < 0)");
+				if((piece.transform.position.y-piece.transform.localScale.y/2)>cell.y&&
+					(piece.transform.position.y-piece.transform.localScale.y/2)<(cell.y-cell.height)
+					&&Mathf.Abs( cell.x-(piece.transform.position.x-piece.transform.localScale.x/2))<0.05f)
+				{
+					return cell;
+				}
+
+			
+				
+			}
+			else if (direction.x > 0) {
+				Debug.Log ("else if (direction.x > 0)");
+				if((piece.transform.position.x+piece.transform.localScale.x/2)>cell.x&&
+					(piece.transform.position.x+piece.transform.localScale.x/2)<(cell.x+cell.width)
+					&&cell.y==piece.transform.position.y-piece.transform.localScale.y/2)
+				{
+					return cell;
+				}
+
+				
+			}
+			else if (direction.x < 0) {
+				Debug.Log ("else if (direction.x < 0)");
+				if((piece.transform.position.x-piece.transform.localScale.x/2)>cell.x&&
+					(piece.transform.position.x-piece.transform.localScale.x/2)<(cell.x+cell.width)
+					&&cell.y==piece.transform.position.y-piece.transform.localScale.y/2)
+				{
+					return cell;
+				}
+				
+			}
+		}
+
+		return null;
 	}
 
 	private void setupGame()
@@ -109,9 +183,7 @@ public class Snake : MonoBehaviour {
 				cell.height = cellHeight;
 				listCells.Add (cell);
 			}
-	//	Debug.Log ("cell count:"+rows);
-	//	Debug.Log ("cell count:"+colums);
-	//	Debug.Log ("cell count:"+listCells.Count);
+	
 
 
 		drawGrid ();
@@ -127,13 +199,14 @@ public class Snake : MonoBehaviour {
 
 	private void addInitialPieces()
 	{
-		GameObject piece =(GameObject) listPieces [0];
+		
 		int rr = rows / 2;
 		int cc = colums / 2;
-		piece.transform.position = new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ rr * cellHeight+cellHeight/2, 0);
+		head.transform.position = new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ rr * cellHeight+cellHeight/2, 0);
 
+		GameObject piece = null;
 		Vector3 p = Vector3.zero;
-		for(int j=rr+1;j<rr+6;j++)
+		for(int j=rr+1;j<rr+1;j++)
 		{
 			p=new Vector3 (startX+ cc * cellWidth+cellWidth/2,startY+ j * cellHeight+cellHeight/2, 0);;
 			piece=(GameObject)Instantiate(this.prfPiece, p, Quaternion.identity);
@@ -210,23 +283,44 @@ public class Snake : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (true)
+
+		if (this.gameStatus != Snake.STATUS_RUNNING)
 			return;
+		if (this.boundariesCollide (head)) {
+			this.gameStatus = Snake.STATUS_GAME_OVER;
+			return ;
+		}
 		this.handleInput ();
 		gameTime += Time.deltaTime;
-		Vector3 newPos = transform.position + (this.direction * cellWidth);
 
 
-		if (!this.boundariesCollide (newPos,this.gameObject))
-			this.transform.position = newPos;
+	
+		/*	Vector3 newPos = transform.position + (this.direction * cellWidth);
+
+
+			if (!this.boundariesCollide (newPos,this.gameObject))
+				this.transform.position = newPos;*/
 	}
 
 	private void handleInput()
 	{
-		if (Input.GetKey ("up"))
+		
+		if (Input.GetKey ("up")) {
+			
 			this.direction = Vector3.up;
-		else if (Input.GetKey ("down"))
+		} else if (Input.GetKey ("down")) {
+			SNCell cell= getMyCell (head);
+
+
+
+			Debug.Log("piece.transform.position.x:"+head.transform.position.x);
+			Debug.Log("piece.transform.position.y:"+head.transform.position.y);
+			Debug.Log("cell.x:"+cell.x);
+			Debug.Log("cell.y:"+cell.y);
+			Debug.Break ();
+
 			this.direction = Vector3.down;
+		}
 		else if (Input.GetKey ("left"))
 			this.direction = Vector3.left;
 		else if (Input.GetKey ("right"))
@@ -236,10 +330,10 @@ public class Snake : MonoBehaviour {
 
 
 
-	bool boundariesCollide(Vector3 p,GameObject gameObject)
+	bool boundariesCollide(GameObject gameObject)
 	{
 		//startX startY 
-
+		Vector3 p=gameObject.transform.position;
 
 		float w = gameObject.transform.localScale.x;
 		float h = gameObject.transform.localScale.y;

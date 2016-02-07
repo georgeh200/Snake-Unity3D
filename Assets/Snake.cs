@@ -15,7 +15,8 @@ public class Snake : MonoBehaviour {
 	public int gameStatus;
 
 	private GameObject head;
-	private ArrayList listCells;
+
+
 	private SNCell [,] arrCells;
 	private ArrayList listPieces;
 
@@ -45,7 +46,8 @@ public class Snake : MonoBehaviour {
 	public Snake()
 	{
 		
-		listCells = new ArrayList ();
+
+
 		listPieces = new ArrayList ();
 		instance = this;
 	}
@@ -93,59 +95,7 @@ public class Snake : MonoBehaviour {
 		return arrCells[r,c];
 	}
 
-	public SNCell getMyCell(GameObject piece)
-	{
-		SNCell cell = null;
-		for (int j = 0; j < listCells.Count; j++) {
-			cell = (SNCell)listCells [j];
 
-			if (direction.y > 0) {
-				Debug.Log ("direction.y > 0");
-				if((piece.transform.position.y+piece.transform.localScale.y/2)<(cell.y+cell.height)&&
-				(piece.transform.position.y+piece.transform.localScale.y/2)>cell.y
-					&&Mathf.Abs( cell.x-piece.transform.position.x-piece.transform.localScale.x/2)<0.05f)
-				{
-				return cell;
-				}
-
-			}
-			else if (direction.y < 0) {
-				Debug.Log ("direction.y < 0)");
-				if((piece.transform.position.y-piece.transform.localScale.y/2)>cell.y&&
-					(piece.transform.position.y-piece.transform.localScale.y/2)<(cell.y+cell.height)
-					&&Mathf.Abs( cell.x-piece.transform.position.x-piece.transform.localScale.x/2)<0.05f)
-				{
-					return cell;
-				}
-
-			
-				
-			}
-			else if (direction.x > 0) {
-				Debug.Log ("direction.x > 0");
-				if((piece.transform.position.x+piece.transform.localScale.x/2)>cell.x&&
-					(piece.transform.position.x+piece.transform.localScale.x/2)<(cell.x+cell.width)
-					&&Mathf.Abs(cell.y-piece.transform.position.y-piece.transform.localScale.y/2)<0.05f)
-				{
-					return cell;
-				}
-
-				
-			}
-			else if (direction.x < 0) {
-				Debug.Log ("(direction.x < 0");
-				if((piece.transform.position.x-piece.transform.localScale.x/2)>cell.x&&
-					(piece.transform.position.x-piece.transform.localScale.x/2)<(cell.x+cell.width)
-					&&Mathf.Abs(cell.y-piece.transform.position.y-piece.transform.localScale.y/2)<0.05f)
-				{
-					return cell;
-				}
-				
-			}
-		}
-
-		return null;
-	}
 
 	private void setupGame()
 	{
@@ -199,15 +149,7 @@ public class Snake : MonoBehaviour {
 
 
 
-		for (int j = 0; j < colums; j++)
-			for (int i = 0; i < rows; i++) {
-				cell = new SNCell ();
-				cell.x = startX + j * cellWidth;
-				cell.y = startY + i * cellHeight;
-				cell.width = cellWidth;
-				cell.height = cellHeight;
-				listCells.Add (cell);
-			}
+
 	
 
 
@@ -217,10 +159,7 @@ public class Snake : MonoBehaviour {
 		addInitialPieces ();
 
 
-		for (int j = 0; j < listCells.Count; j++) {
 
-		//	Debug.Log (((SNCell)listCells [j]).x);
-		}
 
 
 	}
@@ -240,7 +179,7 @@ public class Snake : MonoBehaviour {
 		SNPiece pp = head.GetComponent<SNPiece> ();
 		pp.row = rr;
 		pp.column = cc;
-
+		getCell (rr, cc).runningPiece = head;
 
 	//	Debug.Log ("head.transform.position:" + head.transform.position.x);	
 
@@ -253,6 +192,7 @@ public class Snake : MonoBehaviour {
 			pp = piece.GetComponent<SNPiece> ();
 			pp.row = j;
 			pp.column = cc;
+			getCell (j, cc).runningPiece = piece;
 			listPieces.Add (piece);
 		}
 	}
@@ -325,7 +265,10 @@ public class Snake : MonoBehaviour {
 	}
 
 
-
+	public void snakeCollideitSelf()
+	{
+		this.gameStatus = Snake.STATUS_GAME_OVER;
+	}
 	void FixedUpdate () {
 
 

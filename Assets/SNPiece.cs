@@ -33,6 +33,10 @@ public class SNPiece : MonoBehaviour {
 
 	public void updateCell()
 	{
+		SNCell cell = snake.getCell (this.row, this.column);
+		cell.runningPiece = null;
+		cell.exitPiece = this.gameObject;
+
 		if (this.direction == Vector3.up) {
 			this.row++;
 		} else if (this.direction == Vector3.down) {
@@ -43,7 +47,12 @@ public class SNPiece : MonoBehaviour {
 			this.column++;
 		}
 
-		SNCell cell = snake.getCell (this.row, this.column);
+		 cell = snake.getCell (this.row, this.column);
+		if (cell.runningPiece != null) {
+			snake.snakeCollideitSelf ();
+		}
+		cell.runningPiece = this.gameObject;
+
 		if (cell.direction != Vector3.zero) {
 			this.direction = cell.direction;
 			if (snake.lastPieceInSnake (this.gameObject)) {

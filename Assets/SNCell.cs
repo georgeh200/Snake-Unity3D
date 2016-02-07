@@ -10,7 +10,9 @@ public class SNCell  {
 	public int row;
 	public int column;		
 
-	public GameObject piece;
+	public GameObject 	runningPiece;
+	public GameObject exitPiece;
+
 	public Vector3 getCenter()
 	{
 		return new Vector3 (this.x + this.width / 2, this.y + this.height / 2, 0);

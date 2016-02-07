@@ -7,10 +7,13 @@ public class SNPiece : MonoBehaviour {
 	private Snake snake;
 	public Vector3 direction;
 
+	public int row;
+	public int column;	
+
 	public SNPiece ()
 	{
-		snake = Snake.getInstance ();
-		this.index = snake.getMyCellIndex ();
+		snake = Snake.getInstance (	);
+	//	this.index = snake.getMyCellIndex ();
 	//	Debug.Log ("this.index:"+this.index);
 	}
 	// Use this for initialization
@@ -26,12 +29,28 @@ public class SNPiece : MonoBehaviour {
 		 
 		if (snake.gameStatus != Snake.STATUS_RUNNING)
 			return;
-			
-		this.direction = snake.direction;
+				
+	//	SNCell cell = snake.getMyCell (this.gameObject);
+	//	Debug.Log ("1:"+this.gameObject.transform.position.x);
+	//	Debug.Log ("2:"+this.transform.position.x);
+	//	if (cell.direction != Vector3.zero && Vector3.Distance (this.transform.position, cell.getCenter ()) < 0.05f)
+	//		this.direction = cell.direction;
 		//Debug.Log ("this.direction:"+this.direction.y);		
-		if(this.direction.x==0)
-			this.transform.position = transform.position + (this.direction *snake.cellHeight* snake.speed);
-		else this.transform.position = transform.position + (this.direction *snake.cellWidth* snake.speed);
+
+	this.transform.position = transform.position + (this.direction *snake.cellWidth* snake.speed);
 		
+	}
+
+	public void updateCell()
+	{
+		if (this.direction == Vector3.up) {
+			this.row++;
+		} else if (this.direction == Vector3.down) {
+			this.row--;
+		} else if (this.direction == Vector3.left) {
+			this.column--;
+		} else if (this.direction == Vector3.right) {
+			this.column++;
+		}
 	}
 }
